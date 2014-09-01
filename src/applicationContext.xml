@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver">
+		</property>
+		<property name="url" value="jdbc:mysql://localhost:3306/test"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="geniusofme"></property>
+	</bean>
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource">
+			<ref bean="dataSource" />
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">
+					org.hibernate.dialect.MySQLDialect
+				</prop>
+			</props>
+		</property>
+		<property name="mappingResources">
+			<list>
+				<value>com/domain/Users.hbm.xml</value>
+				<value>com/domain/Blog.hbm.xml</value>
+				<value>com/domain/Message.hbm.xml</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="transactionInterceptor"
+		class="org.springframework.transaction.interceptor.TransactionInterceptor">
+		<!-- 事务拦截器bean需要依赖注入一个事务管理器 -->
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="transactionAttributes">
+			<!-- 下面定义事务传播属性 -->
+			<props>
+				<prop key="get*">PROPAGATION_REQUIRED,readOnly</prop>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- 定义BeanNameAutoProxyCreator -->
+	<bean
+		class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+		<!-- 指定哪些bean自动生成业务代理 -->
+		<property name="beanNames">
+			<!-- 下面是所有需要自动创建事务代理的bean -->
+			<list>
+				<value>mgr</value>
+			</list>
+			<!-- 此处可增加其他需要自动创建事务代理的bean -->
+		</property>
+		<!-- 下面定义BeanNameAutoProxyCreator所需的事务拦截器 -->
+		<property name="interceptorNames">
+			<list>
+				<!-- 此处可增加其他新的Interceptor -->
+				<value>transactionInterceptor</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="mgr" class="com.service.impl.ActionManagerImpl">
+		<property name="userDAO" ref="userDAO" />
+		<property name="blogDAO" ref="blogDAO" />
+		<property name="messageDAO" ref="messageDAO" />
+	</bean>
+
+	<bean id="blogDAO" class="com.dao.impl.BlogDAOImpl">
+		<property name="sessionFactory">
+			<ref local="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="userDAO" class="com.dao.impl.UserDAOImpl">
+		<property name="sessionFactory">
+			<ref local="sessionFactory" />
+		</property>
+	</bean>
+	<bean id="messageDAO" class="com.dao.impl.MessageDAOImpl">
+		<property name="sessionFactory">
+			<ref local="sessionFactory" />
+		</property>
+	</bean>
+	<bean name="login" class="com.action.LoginAction" scope="prototype"
+		autowire="byName" />
+	<bean name="showblog" class="com.action.ViewBlogAction" scope="prototype"
+		autowire="byName" />
+	<bean name="saveblog" class="com.action.SaveBlogAction" scope="prototype"
+		autowire="byName" />
+	<bean name="showSavePageAction" class="com.action.ShowSavePageAction"
+		scope="prototype" autowire="byName" />
+	<bean name="showMessage" class="com.action.ViewMessageAction"
+		scope="prototype" autowire="byName" />
+	<bean name="saveMessageAction" class="com.action.SaveMessageAction"
+		scope="prototype" autowire="byName" />
+	<bean name="deleteBlog" class="com.action.DeleteBlogAction" scope="prototype"
+		autowire="byName" />
+	<bean name="admin" class="com.action.AdminAction" scope="prototype"
+		autowire="byName" />
+	<bean name="getInfo" class="com.action.InformationAction" scope="prototype"
+		autowire="byName" />
+	<bean name="updatePassword" class="com.action.updatePassword" scope="prototype"
+		autowire="byName" />
+
+
+
+	<!--lee add -->
+
+</beans>

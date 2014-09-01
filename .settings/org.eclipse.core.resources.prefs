@@ -1,0 +1,10 @@
+#Wed May 15 21:26:04 CST 2013
+eclipse.preferences.version=1
+encoding//WebRoot/blog.jsp=UTF-8
+encoding//WebRoot/newblog.jsp=UTF-8
+encoding//src/com/action/LoginAction.java=UTF-8
+encoding//src/com/action/ViewBlogAction.java=UTF-8
+encoding//src/com/dao/BlogDAO.java=UTF-8
+encoding//src/com/dao/UserDAO.java=UTF-8
+encoding//src/com/dao/impl/UserDAOImpl.java=UTF-8
+encoding//src/com/service/ActionManager.java=UTF-8
